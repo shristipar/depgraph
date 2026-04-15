@@ -17,7 +17,7 @@ func main() {
 		repoURL    = flag.String("url", "", "GitHub/GitLab repository URL (required)")
 		outputFile = flag.String("output", "dependency_graph", "Output file name (without extension)")
 		outputFmt  = flag.String("format", "dot", "Output format: dot, json, svg")
-		language   = flag.String("lang", "auto", "Language to analyze: auto, go, python, javascript, typescript")
+		language   = flag.String("lang", "auto", "Language to analyze: auto, go, python, javascript, typescript, java")
 		maxDepth   = flag.Int("depth", 0, "Max import depth (0 = unlimited)")
 		verbose    = flag.Bool("verbose", false, "Verbose output")
 	)

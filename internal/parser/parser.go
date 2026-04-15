@@ -54,8 +54,10 @@ func New(lang string) (Parser, error) {
 		return NewJSParser(false), nil
 	case "typescript", "ts":
 		return NewJSParser(true), nil
+	case "java":
+		return NewJavaParser(), nil
 	default:
-		return nil, fmt.Errorf("unsupported language %q — supported: go, python, javascript, typescript", lang)
+		return nil, fmt.Errorf("unsupported language %q — supported: go, python, javascript, typescript, java", lang)
 	}
 }
 
@@ -75,6 +77,8 @@ func DetectLanguage(root string) (string, error) {
 			counts["typescript"]++
 		case ".js", ".jsx":
 			counts["javascript"]++
+		case ".java":
+			counts["java"]++
 		}
 		return nil
 	})

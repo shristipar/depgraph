@@ -9,7 +9,7 @@ A CLI tool that clones a GitHub/GitLab repository and generates a visual depende
 - 🗺️ Generates dependency graphs in **DOT**, **JSON**, or **SVG** formats
 - 🔴 Detects **circular dependencies** and highlights them in red
 - 🎨 Color-coded: internal packages (blue) vs. external dependencies (orange)
-- 🚀 Supports **Go**, **Python**, **JavaScript**, and **TypeScript**
+- 🚀 Supports **Go**, **Python**, **Java**, **JavaScript**, and **TypeScript**
 - 🔍 Auto-detects the primary language of the repository
 
 ## Supported Languages
@@ -20,6 +20,7 @@ A CLI tool that clones a GitHub/GitLab repository and generates a visual depende
 | Python     | `import foo`, `from foo import bar`, relative imports       |
 | JavaScript | ES `import`, `export from`, CommonJS `require()`           |
 | TypeScript | All JS patterns + TypeScript-specific syntax               |
+| Java       | `import` (including `import static` and `.*`)              |
 
 ## Installation
 
@@ -53,7 +54,7 @@ go build -o depgraph ./cmd/
 | Flag        | Default              | Description                                        |
 |-------------|----------------------|----------------------------------------------------|
 | `--url`     | *(required)*         | GitHub or GitLab repository URL                    |
-| `--lang`    | `auto`               | Language: `auto`, `go`, `python`, `javascript`, `typescript` |
+| `--lang`    | `auto`               | Language: `auto`, `go`, `python`, `javascript`, `typescript`, `java` |
 | `--format`  | `dot`                | Output format: `dot`, `json`, `svg`               |
 | `--output`  | `dependency_graph`   | Output filename (extension added automatically)    |
 | `--depth`   | `0` (unlimited)      | Max directory depth to analyze                     |
@@ -96,7 +97,8 @@ depgraph/
 │   │   ├── parser.go        # Language detection + Parser interface
 │   │   ├── go_parser.go     # Go import extraction (tree-sitter)
 │   │   ├── python_parser.go # Python import extraction (tree-sitter)
-│   │   └── js_parser.go     # JS/TS import extraction (tree-sitter)
+│   │   ├── js_parser.go     # JS/TS import extraction (tree-sitter)
+│   │   └── java_parser.go   # Java import extraction (tree-sitter)
 │   └── graph/
 │       └── graph.go         # Graph building + DOT/JSON/SVG output
 └── go.mod
@@ -122,4 +124,7 @@ depgraph/
 
 # Analyze a TypeScript project with depth limit
 ./depgraph --url https://github.com/microsoft/vscode --lang typescript --depth 2
+
+# Analyze a Java project
+./depgraph --url https://github.com/google/guava --lang java --format dot
 ```
