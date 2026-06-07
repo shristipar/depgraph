@@ -1,3 +1,4 @@
 .idea/
 depgraph
-dependency_graph.dot
+depgraph-mcp
+dependency_graph.*

@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "depgraph": {
+      "command": "go",
+      "args": ["run", "./cmd/depgraph-mcp/"],
+      "env": {}
+    }
+  }
+}

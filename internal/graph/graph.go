@@ -29,6 +29,24 @@ func (g *Graph) CircularCount() int {
 	return g.circular
 }
 
+// CycleEdge is a directed edge that participates in a cycle.
+type CycleEdge struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+// CycleEdges returns edges identified as part of dependency cycles.
+func (g *Graph) CycleEdges() []CycleEdge {
+	cycles := g.cycleEdges()
+	out := make([]CycleEdge, 0, len(cycles))
+	for _, e := range g.data.Edges {
+		if cycles[e.From+"->"+e.To] {
+			out = append(out, CycleEdge{From: e.From, To: e.To})
+		}
+	}
+	return out
+}
+
 // ------------------------------------------------------------------
 // DOT output (Graphviz)
 // ------------------------------------------------------------------
@@ -115,6 +133,20 @@ type jsonGraph struct {
 
 // WriteJSON writes the dependency graph as JSON.
 func (g *Graph) WriteJSON(path string) error {
+	data, err := g.MarshalJSON()
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(path, data, 0o644)
+}
+
+// MarshalJSON returns the dependency graph encoded as indented JSON.
+func (g *Graph) MarshalJSON() ([]byte, error) {
+	jg := g.buildJSONGraph()
+	return json.MarshalIndent(jg, "", "  ")
+}
+
+func (g *Graph) buildJSONGraph() *jsonGraph {
 	jg := &jsonGraph{}
 
 	nodeIDs := make([]string, 0, len(g.data.Nodes))
@@ -141,12 +173,7 @@ func (g *Graph) WriteJSON(path string) error {
 	jg.Stats.Nodes = g.data.NodeCount
 	jg.Stats.Edges = g.data.EdgeCount
 	jg.Stats.Cycles = g.circular
-
-	data, err := json.MarshalIndent(jg, "", "  ")
-	if err != nil {
-		return err
-	}
-	return os.WriteFile(path, data, 0o644)
+	return jg
 }
 
 // ------------------------------------------------------------------

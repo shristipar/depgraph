@@ -1,7 +1,10 @@
-.PHONY: build run tidy clean
+.PHONY: build build-mcp run tidy clean
 
 build:
 	go build -o depgraph ./cmd/
+
+build-mcp:
+	go build -o depgraph-mcp ./cmd/depgraph-mcp/
 
 tidy:
 	go mod tidy
