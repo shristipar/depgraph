@@ -191,6 +191,7 @@ depgraph/
 ├── internal/
 │   ├── analyze/
 │   │   ├── analyze.go       # Shared clone/parse/graph pipeline
+│   │   ├── analyze_test.go  # Integration test (gin-gonic/gin)
 │   │   ├── report.go        # Structured JSON reports
 │   │   └── query.go         # Cycles and neighbors reports
 │   ├── cloner/
@@ -218,6 +219,47 @@ depgraph/
 5. **Detect cycles** — DFS and strongly connected components; cyclic edges highlighted in red
 6. **Output** — write DOT / JSON / SVG (CLI), or return structured JSON (MCP)
 
+## Testing
+
+Run unit tests (skips network integration test):
+
+```bash
+go test -short ./...
+```
+
+Run the full suite including the Gin integration test (requires `git` and network):
+
+```bash
+make test
+# or
+go test ./...
+```
+
+Run only the integration test with verbose output:
+
+```bash
+go test -v ./internal/analyze/ -run TestRun_GinRepo
+```
+
+### Gin integration test
+
+`internal/analyze/analyze_test.go` clones [gin-gonic/gin](https://github.com/gin-gonic/gin) and runs the full analysis pipeline. It verifies:
+
+- Shallow clone and Go language detection
+- Expected scale of files, nodes, and edges
+- Presence of internal packages (e.g. `github.com/gin-gonic/gin/binding`) and external deps (e.g. `encoding/json`)
+- `Report()` and `NeighborsReport()` output
+
+Skipped when `go test -short` is used or `git` is not in PATH.
+
+### Other tests
+
+| Package              | Coverage                                      |
+|----------------------|-----------------------------------------------|
+| `internal/analyze`   | End-to-end clone + analysis of gin-gonic/gin  |
+| `internal/graph`     | Cycle groups and neighbor queries              |
+| `internal/parser`    | Java parser and helper functions               |
+
 ## Examples
 
 ```bash
@@ -233,6 +275,6 @@ depgraph/
 # Analyze a TypeScript project with depth limit
 ./depgraph --url https://github.com/microsoft/vscode --lang typescript --depth 2
 
-# Run tests
-make test
+# Reproduce the integration test manually
+./depgraph --url https://github.com/gin-gonic/gin --lang go --format dot
 ```
