@@ -1,10 +1,13 @@
-.PHONY: build build-mcp run tidy clean
+.PHONY: build build-mcp build-verify run tidy clean
 
 build:
 	go build -o depgraph ./cmd/
 
 build-mcp:
 	go build -o depgraph-mcp ./cmd/depgraph-mcp/
+
+build-verify:
+	go build -o depgraph-verify ./cmd/verify/
 
 tidy:
 	go mod tidy

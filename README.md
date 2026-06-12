@@ -143,6 +143,7 @@ Reload MCP in Cursor after changing the config.
 | `analyze_repo`   | Full dependency graph: nodes, edges, stats, and cycle edges |
 | `list_cycles`    | Circular dependency groups (strongly connected components) |
 | `get_neighbors`  | Upstream and downstream dependencies for a specific node |
+| `verify_repo`    | Pass/fail check with structured violations (agent verify loop) |
 
 Common arguments for all tools:
 
@@ -160,6 +161,16 @@ Example agent flow:
 1. Call `analyze_repo` with `{ "path": "/path/to/repo", "lang": "go" }`
 2. Call `get_neighbors` with `{ "path": "/path/to/repo", "node_id": "github.com/user/repo/internal/auth" }`
 3. Call `list_cycles` with `{ "path": "/path/to/repo" }`
+4. Call `verify_repo` after edits until `{ "ok": true }`
+
+See [docs/VERIFY_LOOP.md](docs/VERIFY_LOOP.md) for a step-by-step guide to the agent verify loop.
+
+### Verify CLI (no agent)
+
+```bash
+make build-verify
+./depgraph-verify --path "$(pwd)" --lang go --json   # exit 0 = pass, 1 = fail
+```
 
 ### Test with MCP Inspector
 
