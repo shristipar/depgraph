@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/depgraph/internal/cloner"
 	"github.com/depgraph/internal/graph"
@@ -94,7 +95,11 @@ func resolveRepoPath(ctx context.Context, opts Options) (string, func(), error) 
 		if !info.IsDir() {
 			return "", nil, fmt.Errorf("local path %q is not a directory", opts.Path)
 		}
-		return opts.Path, func() {}, nil
+		abs, err := filepath.Abs(opts.Path)
+		if err != nil {
+			return "", nil, fmt.Errorf("local path: %w", err)
+		}
+		return abs, func() {}, nil
 	}
 
 	if err := ctx.Err(); err != nil {

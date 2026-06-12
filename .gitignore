@@ -1,4 +1,5 @@
 .idea/
 depgraph
 depgraph-mcp
+depgraph-verify
 dependency_graph.*
